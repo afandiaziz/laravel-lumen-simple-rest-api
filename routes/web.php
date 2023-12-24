@@ -2,6 +2,9 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -15,4 +18,14 @@
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
+});
+
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $router->post('/login', 'UserController@login');
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+        $router->post('/logout', 'UserController@logout');
+        $router->post('/attendances', 'AttendanceController@attendances');
+        $router->post('/clock-in', 'AttendanceController@clockIn');
+        $router->post('/clock-out', 'AttendanceController@clockOut');
+    });
 });
